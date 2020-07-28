@@ -11,5 +11,11 @@ type PageInfo {
 
 type Query {
   node(id: ID!): Node
+  elapsedTime: Int!
+}
+
+type Mutation {
+  advanceTime(by: Int!): Int!
+  resetTime(to: Int!): Int!
 }
 
