@@ -10,13 +10,17 @@
     "@types/node": "^12.0.0",
     "@types/react": "^16.9.0",
     "@types/react-dom": "^16.9.0",
+    "@types/react-relay": "^7.0.8",
+    "@types/relay-runtime": "^10.0.1",
     "babel-plugin-relay": "^10.0.1",
     "graphql": "^15.3.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-relay": "^10.0.1",
     "react-scripts": "3.4.1",
     "relay-compiler": "^10.0.1",
     "relay-compiler-language-typescript": "^12.0.4",
+    "relay-config": "^10.0.1",
     "relay-runtime": "^10.0.1",
     "typescript": "~3.7.2"
   },
@@ -42,5 +46,18 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:8080"
+  "proxy": "http://localhost:8080",
+  "babel": {
+    "presets": [
+      "react-app"
+    ],
+    "plugins": [
+      [
+        "relay",
+        {
+          "schema": "../backend/graph/schema.graphql"
+        }
+      ]
+    ]
+  }
 }
