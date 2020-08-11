@@ -4,14 +4,5 @@
     "@babel/preset-typescript",
     "@babel/preset-react"
   ],
-  "plugins": [
-    [
-      "relay",
-      {
-        "schema": "../../backend/graph/schema.graphqls",
-        "artifactDirectory": "./__generated__"
-      }
-    ]
-    //"transform-runtime"
-  ]
+  "plugins": [["relay"]]
 }
