@@ -29,7 +29,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "relay": "relay-compiler --src . --schema ../backend/graph/schema.graphqls --language typescript --watchman false --artifactDirectory ./__generated__"
+    "relay": "relay-compiler --src . --schema ../backend/graph/schema.graphqls --language typescript --watchman false"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -50,14 +50,6 @@
   "babel": {
     "presets": [
       "react-app"
-    ],
-    "plugins": [
-      [
-        "relay",
-        {
-          "schema": "../backend/graph/schema.graphql"
-        }
-      ]
     ]
   }
 }
