@@ -8,6 +8,7 @@ import { ElapsedTime } from "./components/ElapsedTime";
 import { TimeIncrementer } from "./components/TimeIncrementer";
 import { ScreenSelector } from "./components/ScreenSelector";
 import { environment } from "./relay/environment";
+import { TimeResetter } from "./components/TimeResetter";
 
 const query = graphql`
   query GameMasterScreenQuery {
@@ -47,6 +48,11 @@ export const GameMasterScreen = () => {
             <TimeIncrementer
               time={`One Hour`}
               bySeconds={3600}
+              onUpdate={onUpdate}
+            />
+            <TimeResetter
+              time={`the beginning of time`}
+              toSeconds={0}
               onUpdate={onUpdate}
             />
           </div>
