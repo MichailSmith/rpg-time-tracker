@@ -12,10 +12,35 @@ type PageInfo {
 type Query {
   node(id: ID!): Node
   elapsedTime: Int!
+  times: [Time!]!
+  users: [User!]!
 }
 
 type Mutation {
   advanceTime(by: Int!): Int!
   resetTime(to: Int!): Int!
+  createUser(input: NewUser!): User!
 }
 
+type User {
+  id: ID!
+  username: String!
+  password: String!
+  email: String!
+  is_gm: Boolean!
+}
+
+input NewUser {
+  id: ID!
+  username: String!
+  password: String!
+  email: String!
+  is_gm: Boolean!
+}
+
+type Time {
+  id: ID!
+  user_id: ID!
+  campaign_name: String!
+  elapsed_time: Int!
+}
