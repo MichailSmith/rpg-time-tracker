@@ -1,0 +1,13 @@
+runtime: go114
+
+instance_class: F1
+
+handlers:
+  - url: /query
+    script: auto
+  - url: /
+    static_files: dist/index.html
+    upload: dist/index.html
+  - url: /(.+)
+    static_files: dist/\1
+    upload: dist/.*
