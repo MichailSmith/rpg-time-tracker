@@ -1,0 +1,32 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - run: npm install
+        working-directory: ./frontend
+      
+      - name: build frontend
+        run: npm run build
+        working-directory: ./frontend
+     
+      - run: mv ./frontend/build ./backend/dist
+      
+      - name: deploy app
+        uses: actions-hub/gcloud@master
+        env:
+          PROJECT_ID: rpg-time-tracker
+          APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+        with:
+          args: app deploy ./backend/app.yaml --quiet
