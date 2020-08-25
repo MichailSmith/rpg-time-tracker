@@ -44,3 +44,10 @@ type Time {
   campaign_name: String!
   elapsed_time: Int!
 }
+
+type NewTime {
+  id: ID!
+  user_id: ID!
+  campaign_name: String!
+  elapsed_time: Int!
+}

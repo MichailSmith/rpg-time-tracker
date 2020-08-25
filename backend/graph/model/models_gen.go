@@ -6,6 +6,13 @@ type Node interface {
 	IsNode()
 }
 
+type NewTime struct {
+	ID           string `json:"id"`
+	UserID       string `json:"user_id"`
+	CampaignName string `json:"campaign_name"`
+	ElapsedTime  int    `json:"elapsed_time"`
+}
+
 type NewUser struct {
 	ID       string `json:"id"`
 	Username string `json:"username"`
