@@ -45,16 +45,13 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Mutation struct {
-		AdvanceTime func(childComplexity int, by int) int
-		CreateUser  func(childComplexity int, input model.NewUser) int
-		ResetTime   func(childComplexity int, to int) int
-	}
-
-	NewTime struct {
-		CampaignName func(childComplexity int) int
-		ElapsedTime  func(childComplexity int) int
-		ID           func(childComplexity int) int
-		UserID       func(childComplexity int) int
+		AdvanceTime  func(childComplexity int, by int) int
+		CreateTime   func(childComplexity int, input model.NewTime) int
+		CreateUser   func(childComplexity int, input model.NewUser) int
+		DeleteTime   func(childComplexity int, id int) int
+		DeleteUser   func(childComplexity int, id int) int
+		ResetTime    func(childComplexity int, to int) int
+		TransferTime func(childComplexity int, id int, userID int) int
 	}
 
 	PageInfo struct {
@@ -91,6 +88,10 @@ type MutationResolver interface {
 	AdvanceTime(ctx context.Context, by int) (int, error)
 	ResetTime(ctx context.Context, to int) (int, error)
 	CreateUser(ctx context.Context, input model.NewUser) (*model.User, error)
+	CreateTime(ctx context.Context, input model.NewTime) (*model.Time, error)
+	DeleteUser(ctx context.Context, id int) (*model.User, error)
+	DeleteTime(ctx context.Context, id int) (*model.Time, error)
+	TransferTime(ctx context.Context, id int, userID int) (string, error)
 }
 type QueryResolver interface {
 	Node(ctx context.Context, id string) (model.Node, error)
@@ -126,6 +127,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.AdvanceTime(childComplexity, args["by"].(int)), true
 
+	case "Mutation.createTime":
+		if e.complexity.Mutation.CreateTime == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createTime_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateTime(childComplexity, args["input"].(model.NewTime)), true
+
 	case "Mutation.createUser":
 		if e.complexity.Mutation.CreateUser == nil {
 			break
@@ -137,6 +150,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.CreateUser(childComplexity, args["input"].(model.NewUser)), true
+
+	case "Mutation.deleteTime":
+		if e.complexity.Mutation.DeleteTime == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteTime_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteTime(childComplexity, args["id"].(int)), true
+
+	case "Mutation.deleteUser":
+		if e.complexity.Mutation.DeleteUser == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteUser_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteUser(childComplexity, args["id"].(int)), true
 
 	case "Mutation.resetTime":
 		if e.complexity.Mutation.ResetTime == nil {
@@ -150,33 +187,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.ResetTime(childComplexity, args["to"].(int)), true
 
-	case "NewTime.campaign_name":
-		if e.complexity.NewTime.CampaignName == nil {
+	case "Mutation.transferTime":
+		if e.complexity.Mutation.TransferTime == nil {
 			break
 		}
 
-		return e.complexity.NewTime.CampaignName(childComplexity), true
-
-	case "NewTime.elapsed_time":
-		if e.complexity.NewTime.ElapsedTime == nil {
-			break
+		args, err := ec.field_Mutation_transferTime_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
 		}
 
-		return e.complexity.NewTime.ElapsedTime(childComplexity), true
-
-	case "NewTime.id":
-		if e.complexity.NewTime.ID == nil {
-			break
-		}
-
-		return e.complexity.NewTime.ID(childComplexity), true
-
-	case "NewTime.user_id":
-		if e.complexity.NewTime.UserID == nil {
-			break
-		}
-
-		return e.complexity.NewTime.UserID(childComplexity), true
+		return e.complexity.Mutation.TransferTime(childComplexity, args["id"].(int), args["user_id"].(int)), true
 
 	case "PageInfo.endCursor":
 		if e.complexity.PageInfo.EndCursor == nil {
@@ -388,6 +409,10 @@ type Mutation {
   advanceTime(by: Int!): Int!
   resetTime(to: Int!): Int!
   createUser(input: NewUser!): User!
+  createTime(input: NewTime!): Time!
+  deleteUser(id: Int!): User!
+  deleteTime(id: Int!): Time!
+  transferTime(id: Int!, user_id: Int!): String!
 }
 
 type User {
@@ -413,7 +438,7 @@ type Time {
   elapsed_time: Int!
 }
 
-type NewTime {
+input NewTime {
   id: ID!
   user_id: ID!
   campaign_name: String!
@@ -441,6 +466,20 @@ func (ec *executionContext) field_Mutation_advanceTime_args(ctx context.Context,
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_createTime_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.NewTime
+	if tmp, ok := rawArgs["input"]; ok {
+		arg0, err = ec.unmarshalNNewTime2githubᚗcomᚋmichailsmithᚋrpgᚑtimeᚑtrackerᚋgraphᚋmodelᚐNewTime(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_createUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -455,6 +494,34 @@ func (ec *executionContext) field_Mutation_createUser_args(ctx context.Context, 
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_deleteTime_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["id"]; ok {
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_deleteUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["id"]; ok {
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_resetTime_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -466,6 +533,28 @@ func (ec *executionContext) field_Mutation_resetTime_args(ctx context.Context, r
 		}
 	}
 	args["to"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_transferTime_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["id"]; ok {
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["user_id"]; ok {
+		arg1, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["user_id"] = arg1
 	return args, nil
 }
 
@@ -656,7 +745,7 @@ func (ec *executionContext) _Mutation_createUser(ctx context.Context, field grap
 	return ec.marshalNUser2ᚖgithubᚗcomᚋmichailsmithᚋrpgᚑtimeᚑtrackerᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _NewTime_id(ctx context.Context, field graphql.CollectedField, obj *model.NewTime) (ret graphql.Marshaler) {
+func (ec *executionContext) _Mutation_createTime(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -664,16 +753,23 @@ func (ec *executionContext) _NewTime_id(ctx context.Context, field graphql.Colle
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "NewTime",
+		Object:   "Mutation",
 		Field:    field,
 		Args:     nil,
-		IsMethod: false,
+		IsMethod: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_createTime_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
+		return ec.resolvers.Mutation().CreateTime(rctx, args["input"].(model.NewTime))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -685,12 +781,12 @@ func (ec *executionContext) _NewTime_id(ctx context.Context, field graphql.Colle
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*model.Time)
 	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
+	return ec.marshalNTime2ᚖgithubᚗcomᚋmichailsmithᚋrpgᚑtimeᚑtrackerᚋgraphᚋmodelᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _NewTime_user_id(ctx context.Context, field graphql.CollectedField, obj *model.NewTime) (ret graphql.Marshaler) {
+func (ec *executionContext) _Mutation_deleteUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -698,16 +794,23 @@ func (ec *executionContext) _NewTime_user_id(ctx context.Context, field graphql.
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "NewTime",
+		Object:   "Mutation",
 		Field:    field,
 		Args:     nil,
-		IsMethod: false,
+		IsMethod: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_deleteUser_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.UserID, nil
+		return ec.resolvers.Mutation().DeleteUser(rctx, args["id"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -719,12 +822,12 @@ func (ec *executionContext) _NewTime_user_id(ctx context.Context, field graphql.
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*model.User)
 	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚖgithubᚗcomᚋmichailsmithᚋrpgᚑtimeᚑtrackerᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _NewTime_campaign_name(ctx context.Context, field graphql.CollectedField, obj *model.NewTime) (ret graphql.Marshaler) {
+func (ec *executionContext) _Mutation_deleteTime(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -732,16 +835,64 @@ func (ec *executionContext) _NewTime_campaign_name(ctx context.Context, field gr
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "NewTime",
+		Object:   "Mutation",
 		Field:    field,
 		Args:     nil,
-		IsMethod: false,
+		IsMethod: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_deleteTime_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.CampaignName, nil
+		return ec.resolvers.Mutation().DeleteTime(rctx, args["id"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Time)
+	fc.Result = res
+	return ec.marshalNTime2ᚖgithubᚗcomᚋmichailsmithᚋrpgᚑtimeᚑtrackerᚋgraphᚋmodelᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_transferTime(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_transferTime_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().TransferTime(rctx, args["id"].(int), args["user_id"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -756,40 +907,6 @@ func (ec *executionContext) _NewTime_campaign_name(ctx context.Context, field gr
 	res := resTmp.(string)
 	fc.Result = res
 	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _NewTime_elapsed_time(ctx context.Context, field graphql.CollectedField, obj *model.NewTime) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:   "NewTime",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ElapsedTime, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(int)
-	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _PageInfo_hasNextPage(ctx context.Context, field graphql.CollectedField, obj *model.PageInfo) (ret graphql.Marshaler) {
@@ -2492,6 +2609,42 @@ func (ec *executionContext) ___Type_ofType(ctx context.Context, field graphql.Co
 
 // region    **************************** input.gotpl *****************************
 
+func (ec *executionContext) unmarshalInputNewTime(ctx context.Context, obj interface{}) (model.NewTime, error) {
+	var it model.NewTime
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "id":
+			var err error
+			it.ID, err = ec.unmarshalNID2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "user_id":
+			var err error
+			it.UserID, err = ec.unmarshalNID2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "campaign_name":
+			var err error
+			it.CampaignName, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "elapsed_time":
+			var err error
+			it.ElapsedTime, err = ec.unmarshalNInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputNewUser(ctx context.Context, obj interface{}) (model.NewUser, error) {
 	var it model.NewUser
 	var asMap = obj.(map[string]interface{})
@@ -2581,45 +2734,23 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var newTimeImplementors = []string{"NewTime"}
-
-func (ec *executionContext) _NewTime(ctx context.Context, sel ast.SelectionSet, obj *model.NewTime) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, newTimeImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("NewTime")
-		case "id":
-			out.Values[i] = ec._NewTime_id(ctx, field, obj)
+		case "createTime":
+			out.Values[i] = ec._Mutation_createTime(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "user_id":
-			out.Values[i] = ec._NewTime_user_id(ctx, field, obj)
+		case "deleteUser":
+			out.Values[i] = ec._Mutation_deleteUser(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "campaign_name":
-			out.Values[i] = ec._NewTime_campaign_name(ctx, field, obj)
+		case "deleteTime":
+			out.Values[i] = ec._Mutation_deleteTime(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "elapsed_time":
-			out.Values[i] = ec._NewTime_elapsed_time(ctx, field, obj)
+		case "transferTime":
+			out.Values[i] = ec._Mutation_transferTime(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -3127,6 +3258,10 @@ func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.Selecti
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) unmarshalNNewTime2githubᚗcomᚋmichailsmithᚋrpgᚑtimeᚑtrackerᚋgraphᚋmodelᚐNewTime(ctx context.Context, v interface{}) (model.NewTime, error) {
+	return ec.unmarshalInputNewTime(ctx, v)
 }
 
 func (ec *executionContext) unmarshalNNewUser2githubᚗcomᚋmichailsmithᚋrpgᚑtimeᚑtrackerᚋgraphᚋmodelᚐNewUser(ctx context.Context, v interface{}) (model.NewUser, error) {

@@ -20,6 +20,10 @@ type Mutation {
   advanceTime(by: Int!): Int!
   resetTime(to: Int!): Int!
   createUser(input: NewUser!): User!
+  createTime(input: NewTime!): Time!
+  deleteUser(id: Int!): User!
+  deleteTime(id: Int!): Time!
+  transferTime(id: Int!, user_id: Int!): String!
 }
 
 type User {
@@ -45,7 +49,7 @@ type Time {
   elapsed_time: Int!
 }
 
-type NewTime {
+input NewTime {
   id: ID!
   user_id: ID!
   campaign_name: String!
