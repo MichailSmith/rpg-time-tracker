@@ -1,3 +1,57 @@
+.Time-Elapsed {
+  font-size: 30px;
+  font-weight: bold;
+  margin: 20px;
+}
+
+.Nav-Bar {
+  background: black;
+  list-style-type: none;
+  overflow: hidden;
+  margin: 0;
+  border-radius: 0px 0px 25px 25px;
+  padding-left: 20px;
+  padding-right: 20px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.Nav-Title {
+  font-weight: bold;
+  color: white;
+  float: inline-start;
+  padding: 5px 5px;
+  font-size: 20px;
+}
+
+.Nav-Item {
+  color: white;
+  padding: 5px 5px;
+  float: inline-end;
+  font-size: 20px;
+}
+
+.Time-Changer-Button {
+  margin: 10px;
+  background: lightgray;
+  color: black;
+  padding: 5px 5px;
+  border-radius: 25px;
+  box-shadow: 0 9px gray;
+  border: none;
+  width: 225px;
+}
+
+.Time-Changer-Button:hover {
+  background-color: darkgray;
+}
+
+.Time-Changer-Button:active {
+  background-color: darkgray;
+  box-shadow: 0 5px gray;
+  transform: translateY(4px);
+}
+
 .App {
   text-align: center;
 }

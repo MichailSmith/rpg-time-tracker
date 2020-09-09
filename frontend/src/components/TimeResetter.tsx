@@ -25,6 +25,7 @@ export const TimeResetter = ({
   return (
     <div>
       <button
+        className="Time-Changer-Button"
         onClick={() => {
           commitMutation<TimeResetterMutation>(environment, {
             mutation,

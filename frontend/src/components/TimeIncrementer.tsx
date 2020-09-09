@@ -25,6 +25,7 @@ export const TimeIncrementer = ({
   return (
     <div>
       <button
+        className="Time-Changer-Button"
         onClick={() => {
           commitMutation<TimeIncrementerMutation>(environment, {
             mutation,

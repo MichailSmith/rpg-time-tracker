@@ -11,6 +11,6 @@ export const ElapsedTime = ({ elapsedSeconds }: { elapsedSeconds: number }) => {
   const seconds = elapsedSeconds % SECONDS_IN_MINUTE;
 
   return (
-    <>{`It has been ${hours} hours, ${minutes} minutes, and ${seconds} seconds`}</>
+    <div className="Time-Elapsed">{`It has been ${hours} hours, ${minutes} minutes, and ${seconds} seconds`}</div>
   );
 };
