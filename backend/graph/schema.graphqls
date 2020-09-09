@@ -55,3 +55,7 @@ input NewTime {
   campaign_name: String!
   elapsed_time: Int!
 }
+
+type Subscription {
+  elapsedTimeUpdated(id: ID!): Int!
+}

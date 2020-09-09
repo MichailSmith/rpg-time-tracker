@@ -27,7 +27,10 @@ func InitDatabase() (err error) {
 	DB.Create(&model.User{ID: "1", Username: "Mortlock", Password: "thirstwellsux", Email: "mvam@gmail.com", IsGm: true})
 	DB.Create(&model.User{ID: "2", Username: "Raya", Password: "tyrislord", Email: "raya@hellriders.com", IsGm: true})
 	DB.Create(&model.Time{ID: "1", UserID: "1", CampaignName: "Descent into Avernus", ElapsedTime: 0})
-	DB.Create(&model.Time{ID: "2", UserID: "2", CampaignName: "The Temple of Elemental Evil ", ElapsedTime: 500})
+	DB.Create(&model.Time{ID: "2", UserID: "2", CampaignName: "The Temple of Elemental Evil", ElapsedTime: 500})
+	DB.Create(&model.Time{ID: "3", UserID: "2", CampaignName: "The Forge of Fury", ElapsedTime: 5000})
+	DB.Create(&model.Time{ID: "4", UserID: "2", CampaignName: "Tomb of Annihilation", ElapsedTime: 666})
+	DB.Create(&model.Time{ID: "5", UserID: "2", CampaignName: "Ghosts of Saltmarsh", ElapsedTime: 1000000})
 
 	return
 }
