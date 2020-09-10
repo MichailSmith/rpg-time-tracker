@@ -1,12 +1,11 @@
-import React, { useState } from "react";
-import { createFragmentContainer, QueryRenderer } from "react-relay";
+import React from "react";
+import { QueryRenderer } from "react-relay";
 //import { Environment, Network, Store, RecordSource } from "relay-runtime";
 import { GameMasterScreenQuery } from "./__generated__/GameMasterScreenQuery.graphql";
 // @ts-ignore
 import graphql from "babel-plugin-relay/macro";
 import { ElapsedTime } from "./components/ElapsedTime";
 import { TimeIncrementer } from "./components/TimeIncrementer";
-import { ScreenSelector } from "./components/ScreenSelector";
 import { environment } from "./relay/environment";
 import { TimeResetter } from "./components/TimeResetter";
 
