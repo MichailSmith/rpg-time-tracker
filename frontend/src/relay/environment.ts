@@ -1,11 +1,4 @@
-import {
-  Environment,
-  Network,
-  Store,
-  RecordSource,
-  Observable,
-} from "relay-runtime";
-import { SubscriptionClient } from "subscriptions-transport-ws";
+import { Environment, Network, Store, RecordSource } from "relay-runtime";
 
 export const environment = new Environment({
   store: new Store(new RecordSource()),

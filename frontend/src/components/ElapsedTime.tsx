@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 const SECONDS_IN_MINUTE = 60;
 const SECONDS_IN_HOUR = 3600;
