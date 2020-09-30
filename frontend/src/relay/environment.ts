@@ -1,3 +1,4 @@
+import { OAUTH_TOKEN } from "../constants";
 import { Environment, Network, Store, RecordSource } from "relay-runtime";
 
 export const environment = new Environment({
@@ -7,7 +8,8 @@ export const environment = new Environment({
       method: "POST",
       headers: {
         // Add authentication and other headers here
-        "content-type": "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem(OAUTH_TOKEN)}`,
       },
       body: JSON.stringify({
         query: operation.text, // GraphQL text from input

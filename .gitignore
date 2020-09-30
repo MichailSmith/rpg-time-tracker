@@ -16,3 +16,6 @@
 
 # Databases
 *.sqlite
+
+# Environment Files
+*.env

@@ -1,6 +1,5 @@
 import React from "react";
 import { QueryRenderer } from "react-relay";
-//import { Environment, Network, Store, RecordSource } from "relay-runtime";
 import { GameMasterScreenQuery } from "./__generated__/GameMasterScreenQuery.graphql";
 // @ts-ignore
 import graphql from "babel-plugin-relay/macro";
