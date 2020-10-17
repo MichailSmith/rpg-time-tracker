@@ -2,6 +2,12 @@
 
 package model
 
+import (
+	"fmt"
+	"io"
+	"strconv"
+)
+
 type Node interface {
 	IsNode()
 }
@@ -41,4 +47,45 @@ type User struct {
 	Password string `json:"password"`
 	Email    string `json:"email"`
 	IsGm     bool   `json:"is_gm"`
+}
+
+type Role string
+
+const (
+	RoleGm     Role = "GM"
+	RolePlayer Role = "PLAYER"
+)
+
+var AllRole = []Role{
+	RoleGm,
+	RolePlayer,
+}
+
+func (e Role) IsValid() bool {
+	switch e {
+	case RoleGm, RolePlayer:
+		return true
+	}
+	return false
+}
+
+func (e Role) String() string {
+	return string(e)
+}
+
+func (e *Role) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = Role(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid Role", str)
+	}
+	return nil
+}
+
+func (e Role) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }

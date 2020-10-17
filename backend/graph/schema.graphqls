@@ -17,8 +17,8 @@ type Query {
 }
 
 type Mutation {
-  advanceTime(by: Int!): Int!
-  resetTime(to: Int!): Int!
+  advanceTime(by: Int!): Int! #@hasRole(role: GM)
+  resetTime(to: Int!): Int! #@hasRole(role: GM)
   createUser(input: NewUser!): User!
   createTime(input: NewTime!): Time!
   deleteUser(id: Int!): User!
@@ -58,4 +58,11 @@ input NewTime {
 
 type Subscription {
   elapsedTimeUpdated(id: ID!): Int!
+}
+
+directive @hasRole(role: Role!) on FIELD_DEFINITION
+
+enum Role {
+  GM
+  PLAYER
 }

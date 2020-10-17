@@ -14,7 +14,7 @@ import (
 
 func (r *mutationResolver) AdvanceTime(ctx context.Context, by int) (int, error) {
 	var time model.Time
-	err := configs.DB.Where("ID = 1").Find(&time).Error
+	err := configs.DB.Where("User_ID = ?", ctx.Value("userID")).Find(&time).Error
 	if err != nil {
 		return 0, err
 	}
@@ -27,7 +27,7 @@ func (r *mutationResolver) AdvanceTime(ctx context.Context, by int) (int, error)
 
 func (r *mutationResolver) ResetTime(ctx context.Context, to int) (int, error) {
 	var time model.Time
-	err := configs.DB.Model(&time).Where("ID = 1").Update("ElapsedTime", to).Error
+	err := configs.DB.Model(&time).Where("User_ID = ?", ctx.Value("userID")).Update("ElapsedTime", to).Error
 	if err != nil {
 		return 0, err
 	}
@@ -54,7 +54,7 @@ func (r *mutationResolver) CreateTime(ctx context.Context, input model.NewTime) 
 
 func (r *mutationResolver) DeleteUser(ctx context.Context, id int) (*model.User, error) {
 	var user model.User
-	err := configs.DB.Where("ID = ?", id).Find(&user).Error
+	err := configs.DB.Where("User_ID = ?", ctx.Value("userID")).Find(&user).Error
 	if err != nil {
 		return nil, err
 	}
@@ -93,7 +93,7 @@ func (r *queryResolver) Node(ctx context.Context, id string) (model.Node, error)
 
 func (r *queryResolver) ElapsedTime(ctx context.Context) (int, error) {
 	var time model.Time
-	err := configs.DB.Where("ID = 1").Find(&time).Error
+	err := configs.DB.Where("User_ID = ?", ctx.Value("userID")).Find(&time).Error
 	if err != nil {
 		return 0, err
 	}

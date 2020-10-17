@@ -43,6 +43,7 @@ type ResolverRoot interface {
 }
 
 type DirectiveRoot struct {
+	HasRole func(ctx context.Context, obj interface{}, next graphql.Resolver, role model.Role) (res interface{}, err error)
 }
 
 type ComplexityRoot struct {
@@ -444,8 +445,8 @@ type Query {
 }
 
 type Mutation {
-  advanceTime(by: Int!): Int!
-  resetTime(to: Int!): Int!
+  advanceTime(by: Int!): Int! #@hasRole(role: GM)
+  resetTime(to: Int!): Int! #@hasRole(role: GM)
   createUser(input: NewUser!): User!
   createTime(input: NewTime!): Time!
   deleteUser(id: Int!): User!
@@ -486,6 +487,13 @@ input NewTime {
 type Subscription {
   elapsedTimeUpdated(id: ID!): Int!
 }
+
+directive @hasRole(role: Role!) on FIELD_DEFINITION
+
+enum Role {
+  GM
+  PLAYER
+}
 `, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
@@ -493,6 +501,20 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
+
+func (ec *executionContext) dir_hasRole_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.Role
+	if tmp, ok := rawArgs["role"]; ok {
+		arg0, err = ec.unmarshalNRole2githubᚗcomᚋmichailsmithᚋrpgᚑtimeᚑtrackerᚋgraphᚋmodelᚐRole(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["role"] = arg0
+	return args, nil
+}
 
 func (ec *executionContext) field_Mutation_advanceTime_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
@@ -3393,6 +3415,15 @@ func (ec *executionContext) unmarshalNNewTime2githubᚗcomᚋmichailsmithᚋrpg�
 
 func (ec *executionContext) unmarshalNNewUser2githubᚗcomᚋmichailsmithᚋrpgᚑtimeᚑtrackerᚋgraphᚋmodelᚐNewUser(ctx context.Context, v interface{}) (model.NewUser, error) {
 	return ec.unmarshalInputNewUser(ctx, v)
+}
+
+func (ec *executionContext) unmarshalNRole2githubᚗcomᚋmichailsmithᚋrpgᚑtimeᚑtrackerᚋgraphᚋmodelᚐRole(ctx context.Context, v interface{}) (model.Role, error) {
+	var res model.Role
+	return res, res.UnmarshalGQL(v)
+}
+
+func (ec *executionContext) marshalNRole2githubᚗcomᚋmichailsmithᚋrpgᚑtimeᚑtrackerᚋgraphᚋmodelᚐRole(ctx context.Context, sel ast.SelectionSet, v model.Role) graphql.Marshaler {
+	return v
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
